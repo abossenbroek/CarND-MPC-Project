@@ -1,3 +1,4 @@
+set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 project(MPC)
 
 cmake_minimum_required (VERSION 3.5)
@@ -5,6 +6,7 @@ cmake_minimum_required (VERSION 3.5)
 # -g allows for gdb debugging
 # turn on -03 for best performance
 add_definitions(-std=c++11 -O3)
+
 
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS "${CXX_FLAGS}")
