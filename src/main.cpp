@@ -98,24 +98,24 @@ int main()
 					 * The result will be that we have calibration points where the first is (0, 0). The benefit is that this
 					 * allow for easier calibration. */
 
-					vector<double> calibration_points_x;
-					vector<double> calibration_points_y;
+					vector<double> pts_x_rel;
+					vector<double> pts_y_rel;
 
 					for (int i = 0; i < ptsx.size(); ++i) {
 						double dx = ptsx[i] - px;
 						double dy = ptsy[i] - py;
-						calibration_points_x.push_back(dx * cos(psi) + dy * sin(psi));
-						calibration_points_y.push_back(-dx * sin(psi) + dy * cos(psi));
+						pts_x_rel.push_back(dx * cos(psi) + dy * sin(psi));
+						pts_y_rel.push_back(-dx * sin(psi) + dy * cos(psi));
 					}
 
 					// next convert to eigen vectors.
-					double* ptr_x = &calibration_points_x[0];
-					double* ptr_y = &calibration_points_y[0];
+					double* ptr_x = &pts_x_rel[0];
+					double* ptr_y = &pts_y_rel[0];
 
-					Eigen::Map<Eigen::VectorXd> calibration_points_x_(ptr_x, calibration_points_x.size());
-					Eigen::Map<Eigen::VectorXd> calibration_points_y_(ptr_y, calibration_points_y.size());
+					Eigen::Map<Eigen::VectorXd> pts_x_rel_(ptr_x, pts_x_rel.size());
+					Eigen::Map<Eigen::VectorXd> pts_y_rel_(ptr_y, pts_y_rel.size());
 
-					auto coeffs = polyfit(calibration_points_x_, calibration_points_y_, 3);
+					auto coeffs = polyfit(pts_x_rel_, pts_y_rel_, 3);
 
 					// Since the car is placed at the origin we can calculate the crosstrack error at the orgin too.
 					double cte = polyeval(coeffs, 0);
@@ -165,14 +165,8 @@ int main()
 
 					//.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
 					// the points in the simulator are connected by a Yellow line
-
-					for (double i = 0; i < 100; i += 5) {
-						next_x_vals.push_back(i);
-						next_y_vals.push_back(polyeval(coeffs, i));
-					}
-
-					msgJson["next_x"] = next_x_vals;
-					msgJson["next_y"] = next_y_vals;
+					msgJson["next_x"] = pts_x_rel;
+					msgJson["next_y"] = pts_y_rel;
 
 
 					auto msg = "42[\"steer\"," + msgJson.dump() + "]";
