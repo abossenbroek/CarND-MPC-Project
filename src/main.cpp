@@ -101,7 +101,7 @@ int main()
 					vector<double> pts_x_rel;
 					vector<double> pts_y_rel;
 
-					for (int i = 0; i < ptsx.size(); ++i) {
+					for (size_t i = 0; i < ptsx.size(); ++i) {
 						double dx = ptsx[i] - px;
 						double dy = ptsy[i] - py;
 						pts_x_rel.push_back(dx * cos(psi) + dy * sin(psi));
