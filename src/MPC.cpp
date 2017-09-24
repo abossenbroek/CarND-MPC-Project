@@ -12,6 +12,18 @@ using CppAD::AD;
 size_t N = 10;
 double dt = 0.05;
 
+const double w_cte = 5;
+const double w_epsi = 5;
+const double w_v = 5;
+
+const double w_a = 1;
+const double w_delta = 1;
+
+// cost of derivative of steering angle towards time. Impacts smoothness of driving
+const double w_delta_dot = 500;
+// cost of derivative of accelaration towards time. Impacts smoothness of driving
+const double w_a_dot = 1;
+
 // This value assumes the model presented in the classroom is used.
 //
 // It was obtained by measuring the radius formed by running the vehicle in the
@@ -61,22 +73,22 @@ class FG_eval {
     // any anything you think may be beneficial.
 
     // The part of the cost based on the reference state.
-      fg[0] += CppAD::pow(vars[cte_start + t], 2);
-      fg[0] += CppAD::pow(vars[epsi_start + t], 2);
-      fg[0] += CppAD::pow(vars[v_start + t] - ref_v, 2);
     for (size_t t = 0; t < N; t++) {
+      fg[0] += w_cte * CppAD::pow(vars[cte_start + t], 2);
+      fg[0] += w_epsi * CppAD::pow(vars[epsi_start + t], 2);
+      fg[0] += w_v * CppAD::pow(vars[v_start + t] - ref_v, 2);
     }
 
     // Minimize the use of actuators.
-      fg[0] += CppAD::pow(vars[delta_start + t], 2);
-      fg[0] += CppAD::pow(vars[a_start + t], 2);
     for (size_t t = 0; t < N - 1; t++) {
+      fg[0] += w_delta * CppAD::pow(vars[delta_start + t], 2);
+      fg[0] += w_a * CppAD::pow(vars[a_start + t], 2);
     }
 
     // Minimize the value gap between sequential actuations.
-      fg[0] += CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
-      fg[0] += CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
     for (size_t t = 0; t < N - 2; t++) {
+      fg[0] += w_delta_dot * (CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2));
+      fg[0] += w_a_dot * (CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2));
     }
 
     // Initial constraints
