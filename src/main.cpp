@@ -46,7 +46,7 @@ double polyeval(Eigen::VectorXd& coeffs, double x)
 // Fit a polynomial.
 // Adapted from
 // https://github.com/JuliaMath/Polynomials.jl/blob/master/src/Polynomials.jl#L676-L716
-Eigen::VectorXd polyfit(Eigen::VectorXd& xvals, Eigen::VectorXd& yvals, int order)
+Eigen::VectorXd polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals, int order)
 {
 	assert(xvals.size() == yvals.size());
 	assert(order >= 1 && order <= xvals.size() - 1);
@@ -115,7 +115,7 @@ int main()
 					Eigen::Map<Eigen::VectorXd> calibration_points_x_(ptr_x, calibration_points_x.size());
 					Eigen::Map<Eigen::VectorXd> calibration_points_y_(ptr_y, calibration_points_y.size());
 
-					auto coeffs = polyfit(calibration_points_x_, calibration_points_y_, 2);
+					auto coeffs = polyfit(calibration_points_x_, calibration_points_y_, 3);
 
 					// Since the car is placed at the origin we can calculate the crosstrack error at the orgin too.
 					double cte = polyeval(coeffs, 0);
