@@ -146,7 +146,7 @@ class FG_eval {
 MPC::MPC() {}
 MPC::~MPC() {}
 
-vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
+MPCSolution MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   bool ok = true;
   size_t i;
   typedef CPPAD_TESTVECTOR(double) Dvector;
@@ -272,18 +272,15 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   auto cost = solution.obj_value;
   std::cout << "Cost " << cost << std::endl;
 
+  MPCSolution sol;
 
-  vector<double> result;
+  sol.delta.push_back(solution.x[delta_start]);
+  sol.a.push_back(solution.x[a_start]);
 
-  // We want to return the actuators.
-  result.push_back(solution.x[delta_start]);
-  result.push_back(solution.x[a_start]);
-
-  // We also want to add the x and y coordinates
   for (i = 0; i < (N - 1); ++i) {
-    result.push_back(solution.x[x_start + i]);
-    result.push_back(solution.x[y_start + i]);
+    sol.x.push_back(solution.x[x_start + i]);
+    sol.y.push_back(solution.x[y_start + i]);
   }
 
-  return result;
+  return sol;
 }
