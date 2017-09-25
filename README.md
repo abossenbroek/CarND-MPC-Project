@@ -45,7 +45,7 @@ reduces the amount by which the MPC model is able to predict ahead.
 To solve the model we set up the following cost function,
 $$
 J = \sum_{\tau = t + 1}^{t + N} w_{CTE}  CTE_\tau^2 + w_{e\psi}e\psi_tau^2 + w_{v} (v_\tau - v_{ref})^2 + w_\delta\delta_tau^2 +
-w_aa_\tau^2 + w_\dot{\delta} (\delta_{\tau} - \delta_{\tau+1})^2 + w_\dot{a} (a_{\tau} - a_{\tau+1})^
+w_a a_\tau^2 + w_\dot{\delta} (\delta_{\tau} - \delta_{\tau+1})^2 + w_\dot{a} (a_{\tau} - a_{\tau+1})^2
 $$
 where the different $w$'s are the weights in the cost function that penalize certain factors more than others. Through trial and
 error we found that for a reference speed $v_{ref}=40$ the $w_{CTE} = 5, w_{e\psi} = 5, w_v = 5, w_{\dot{\delta}}=600$.
