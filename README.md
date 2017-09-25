@@ -14,9 +14,16 @@ $\delta_t$ and the throttle $a_t$. The model includes the distance between its c
 
 The dynamics of the car are defined as,
 $$
-     x_{t+1} = x_t + v_t \cdot cos(\psi_t) dt\\
-     y_{t+1} = y_t + v_t \cdot sin(\psi_t) dt\\
-     \psi_{t+1} = \psi_t + \frac{v_t}{Lf} t delta_t dt\\
+     x_{t+1} = x_t + v_t \cdot cos(\psi_t) dt
+$$
+
+$$
+     y_{t+1} = y_t + v_t \cdot sin(\psi_t) dt
+$$
+$$
+     \psi_{t+1} = \psi_t + \frac{v_t}{Lf} t \delta_t dt
+$$
+$$
      v_{t+1} = v_t + a_t dt
 $$
 
