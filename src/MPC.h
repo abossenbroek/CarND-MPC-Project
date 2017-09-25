@@ -17,7 +17,7 @@ public:
 
   virtual ~MPC();
 
-  static const int num_states_lost_latency;
+  static const int states_in_latency;
 
   // Solve the model given an initial state and polynomial coefficients.
   // Return the first actuatotions.

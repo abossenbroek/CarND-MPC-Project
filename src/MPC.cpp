@@ -24,6 +24,9 @@ const double w_delta_dot = 500;
 // cost of derivative of accelaration towards time. Impacts smoothness of driving
 const double w_a_dot = 1;
 
+// latency is 100ms
+const int MPC::states_in_latency = static_cast<int>(0.1 / dt + 0.5);
+
 // This value assumes the model presented in the classroom is used.
 //
 // It was obtained by measuring the radius formed by running the vehicle in the
@@ -219,11 +222,24 @@ void MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
     vars_upperbound[i] = 0.436332;
   }
 
+  // Fix states in latency to model the fact that these cannot be changed.
+  for (size_t i = delta_start; i < delta_start + states_in_latency; i++) {
+    vars_lowerbound[i] = delta_;
+    vars_upperbound[i] = delta_;
+  }
+
+
   // Acceleration/decceleration upper and lower limits.
   // NOTE: Feel free to change this to something else.
   for (size_t i = a_start; i < n_vars; i++) {
     vars_lowerbound[i] = -1.0;
     vars_upperbound[i] = 1.0;
+  }
+
+  // Fix states in latency to model the fact that these cannot be changed.
+  for (size_t i = a_start; i < a_start + states_in_latency; ++i) {
+    vars_lowerbound[i] = a_;
+    vars_upperbound[i] = a_;
   }
 
 
@@ -286,11 +302,11 @@ void MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   auto cost = solution.obj_value;
   std::cout << "Cost " << cost << std::endl;
 
-  delta_ = solution.x[delta_start];
-  a_ = solution.x[a_start];
+  delta_ = solution.x[delta_start + states_in_latency];
+  a_ = solution.x[a_start + states_in_latency];
 
   for (size_t i = 0; i < N - 1; ++i) {
-    pred_path_x_.push_back(solution.x[x_start + i]);
-    pred_path_y_.push_back(solution.x[y_start + i]);
+    pred_path_x_[i] = solution.x[x_start + i + 1];
+    pred_path_y_[i] = solution.x[y_start + i + 1];
   }
 }
