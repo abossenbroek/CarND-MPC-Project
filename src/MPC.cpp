@@ -156,7 +156,6 @@ MPC::~MPC() {}
 
 MPCSolution MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   bool ok = true;
-  size_t i;
   typedef CPPAD_TESTVECTOR(double) Dvector;
 
   double x = state[0];
@@ -285,9 +284,9 @@ MPCSolution MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   sol.delta.push_back(solution.x[delta_start]);
   sol.a.push_back(solution.x[a_start]);
 
-  for (i = 0; i < (N - 1); ++i) {
     sol.x.push_back(solution.x[x_start + i]);
     sol.y.push_back(solution.x[y_start + i]);
+  for (size_t i = 0; i < N - 1; ++i) {
   }
 
   return sol;
