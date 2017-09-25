@@ -21,7 +21,7 @@ $$
      y_{t+1} = y_t + v_t \cdot sin(\psi_t) dt
 $$
 $$
-     \psi_{t+1} = \psi_t + \frac{v_t}{Lf} t \delta_t dt
+     \psi_{t+1} = \psi_t + \frac{v_t}{Lf} \delta_t dt
 $$
 $$
      v_{t+1} = v_t + a_t dt
@@ -31,7 +31,9 @@ Core to the MPC are the error metrics that we will use to ensure that the car dr
 metrics. The first error metric is the cross track error, $CTE_t$ and indicates how far the car deviates from the path in
 location. The second error metric measures how much the angle deviates from the desired output and is denoted $e\psi_t$
 $$
-     CTE_{t+1} = f(x_t) - y_t + v_t \cdot sin(e\psi_t)  dt\\
+     CTE_{t+1} = f(x_t) - y_t + v_t \cdot sin(e\psi_t)  dt
+$$
+$$
      e\psi_{t+1} = \psi_t - psides_t + v_t \cdot \frac{delta_t}{Lf}  dt
 $$
 
@@ -42,8 +44,11 @@ reduces the amount by which the MPC model is able to predict ahead.
 ### Solving the Model
 To solve the model we set up the following cost function,
 $$
-J = \sum_{\tau = t + 1}^{t + N} w_{CTE} * CTE_\tau
+J = \sum_{\tau = t + 1}^{t + N} w_{CTE}  CTE_\tau^2 + w_{e\psi}e\psi_tau^2 + w_{v} (v_\tau - v_{ref})^2 + w_\delta\delta_tau^2 +
+w_aa_\tau^2 + w_\dot{\delta} (\delta_{\tau} - \delta_{\tau+1})^2 + w_\dot{a} (a_{\tau} - a_{\tau+1})^
 $$
+where the different $w$'s are the weights in the cost function that penalize certain factors more than others. Through trial and
+error we found that for a reference speed $v_{ref}=40$ the $w_{CTE} = 5, w_{e\psi} = 5, w_v = 5, w_{\dot{\delta}}=600$.
 
 ---
 
