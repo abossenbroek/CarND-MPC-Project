@@ -175,12 +175,6 @@ void MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   double cte = state[4];
   double epsi = state[5];
 
-  // TODO: Set the number of model variables (includes both states and inputs).
-  // For example: If the state is a 4 element vector, the actuators is a 2
-  // element vector and there are 10 timesteps. The number of variables is:
-  //
-  // TODO: AB: verify whether these settings below hold for the exercise!
-  // number of independent variables
   // N timesteps == N - 1 actuations
   size_t n_vars = N * 6 + (N - 1) * 2;
   // Number of constraints
@@ -204,8 +198,6 @@ void MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
 
   Dvector vars_lowerbound(n_vars);
   Dvector vars_upperbound(n_vars);
-  // TODO: Set lower and upper limits for variables.
-  // Lower and upper limits for x
 
   // Set all non-actuators upper and lowerlimits
   // to the max negative and positive values.
@@ -228,9 +220,7 @@ void MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
     vars_upperbound[i] = delta_;
   }
 
-
   // Acceleration/decceleration upper and lower limits.
-  // NOTE: Feel free to change this to something else.
   for (size_t i = a_start; i < n_vars; i++) {
     vars_lowerbound[i] = -1.0;
     vars_upperbound[i] = 1.0;
@@ -241,7 +231,6 @@ void MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
     vars_lowerbound[i] = a_;
     vars_upperbound[i] = a_;
   }
-
 
   // Lower and upper limits for the constraints
   // Should be 0 besides initial state.

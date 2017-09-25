@@ -89,10 +89,9 @@ int main()
 					double psi = j[1]["psi"];
 					double v = j[1]["speed"];
 
-					/* ptsx, ptsy, px and py are relative to the simulator, we want to convert this to the car's perspective.
-					 * The result will be that we have calibration points where the first is (0, 0). The benefit is that this
-					 * allow for easier calibration. */
-
+					// ptsx, ptsy, px and py are relative to the simulator, we want to convert this to the car's perspective.
+					// The result will be that we have calibration points where the first is (0, 0). The benefit is that this
+					// allow for easier calibration.
 					vector<double> pts_x_rel;
 					vector<double> pts_y_rel;
 
@@ -122,9 +121,8 @@ int main()
 					mpc.Solve(state, coeffs);
 
 					json msgJson;
-					// NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
-					// Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
-					msgJson["steering_angle"] = mpc.steeringValue();
+
+          msgJson["steering_angle"] = mpc.steeringValue();
 					msgJson["throttle"] = mpc.throttleValue();
 
 					//Display the MPC predicted trajectory
