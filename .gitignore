@@ -47,3 +47,7 @@ CTestTestfile.cmake
 *.exe
 *.out
 *.app
+
+# Vimfiles
+*swp
+*~
