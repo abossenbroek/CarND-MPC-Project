@@ -14,18 +14,18 @@ $\delta_t$ and the throttle $a_t$. The model includes the distance between its c
 
 The dynamics of the car are defined as,
 $$
-     x_{t+1} = x_t + v_t * cos(\psi_t) * dt
-     y_{t+1} = y_t + v_t * sin(\psi_t) * dt
-     \psi_{t+1} = \psi_t + v_t / Lf * delta_t * dt
-     v_{t+1} = v_t + a_t * dt
+     x_{t+1} = x_t + v_t \cdot cos(\psi_t) dt\\
+     y_{t+1} = y_t + v_t \cdot sin(\psi_t) dt\\
+     \psi_{t+1} = \psi_t + \frac{v_t}{Lf} t delta_t dt\\
+     v_{t+1} = v_t + a_t dt
 $$
 
 Core to the MPC are the error metrics that we will use to ensure that the car drives along the planned path. We consider two error
 metrics. The first error metric is the cross track error, $CTE_t$ and indicates how far the car deviates from the path in
 location. The second error metric measures how much the angle deviates from the desired output and is denoted $e\psi_t$
 $$
-     CTE_{t+1} = f(x_t) - y_t + v_t * sin(epsi_t) * dt
-     e\psi_{t+1} = psi_t - psides_t + v_t * delta_t / Lf * dt
+     CTE_{t+1} = f(x_t) - y_t + v_t \cdot sin(e\psi_t)  dt\\
+     e\psi_{t+1} = \psi_t - psides_t + v_t \cdot \frac{delta_t}{Lf}  dt
 $$
 
 The model has a time horizon of $N = 10$ steps with $dt=0.1$. We chose these parameters through error and trial. Increasing the
