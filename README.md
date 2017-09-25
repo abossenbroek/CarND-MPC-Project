@@ -48,9 +48,25 @@ J = \sum_{\tau = t + 1}^{t + N} w_{CTE}  CTE_\tau^2 + w_{e\psi}e\psi_\tau^2 + w_
 w_a a_\tau^2 + w_\dot{\delta} (\delta_{\tau} - \delta_{\tau+1})^2 + w_\dot{a} (a_{\tau} - a_{\tau+1})^2
 $$
 where the different $w$'s are the weights in the cost function that penalize certain factors more than others. The last two terms
-in the cos function above reduce the use of the actuators from one time step to another. 
+in the cos function above reduce the use of the actuators from one time step to another.
 
-Through trial and error we found that for a reference speed $v_{ref}=40$ the $w_{CTE} = 5, w_{e\psi} = 5, w_v = 5, w_{\dot{\delta}}=600$.
+Through trial and error we found that for a reference speed $v_{ref}=40$ the $w_{CTE} = 5, w_{e\psi} = 5, w_v = 5,
+w_{\dot{\delta}}=600$. To cost function we add the MPC model equations for the complete horizon.
+
+To solve the MPC model we use a library to compute the Hessian and find the minimum under constraints. The constraint allow us to
+ensure that our values for the actuators are realistic as well as account for latency.
+
+#### Constraints
+The lower and upper bound constraints for all values except the actuators are set to respective minimum and maximum of a double
+floating point value. The initial lower and upper bound constraints for the $\delta$ are set respectively to -25 and 25 degrees.
+For the throttle $a$ the respective values are set to -1 and 1. To account for latency we added an additional step to the
+constraints.
+
+### Account for Latency
+Latency occurs because the car will not instantly react on changes in the MPC. As such it is not unseen to have 100 milliseconds
+latency. We account for this by calculating how many steps $\tau$ will be in the latency window. This can be found by dividing the
+latency by $dt$. For the actuators that are in the latency window we set the values equal to the previous values. This helps the
+solver to find a solution that matches a system that has latency.
 
 
 
