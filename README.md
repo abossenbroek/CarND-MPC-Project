@@ -1,6 +1,43 @@
 # CarND-Controls-MPC
 Self-Driving Car Engineer Nanodegree Program
 
+## Model
+A Model Predictive Controller is used to change the acceleration and the steering angle, which are the actuators, along a path in
+the simulation. The MPC assumes no tire forces, gravity or impact from mass. This class of MPCs are often referred to as bicycle
+models. To mimic the travel time of actuators through the car, the model takes into account the latency. Next we will discuss the
+mathematical model, the hyper parameters and the how we account for latency.
+
+### Mathematical Model
+Let the coordinates of the car at time $t$ be denoted by the pair $x_t, y_t$. The steering angle of the car is denoted as
+$\psi_t$. The velocity of the car at time $t$ is denoted as $v_t$. The model has two actuators which are the steering angle
+$\delta_t$ and the throttle $a_t$. The model includes the distance between its center of gravity and its front as $Lf$.
+
+The dynamics of the car are defined as,
+$$
+     x_{t+1} = x_t + v_t * cos(\psi_t) * dt
+     y_{t+1} = y_t + v_t * sin(\psi_t) * dt
+     \psi_{t+1} = \psi_t + v_t / Lf * delta_t * dt
+     v_{t+1} = v_t + a_t * dt
+$$
+
+Core to the MPC are the error metrics that we will use to ensure that the car drives along the planned path. We consider two error
+metrics. The first error metric is the cross track error, $CTE_t$ and indicates how far the car deviates from the path in
+location. The second error metric measures how much the angle deviates from the desired output and is denoted $e\psi_t$
+$$
+     CTE_{t+1} = f(x_t) - y_t + v_t * sin(epsi_t) * dt
+     e\psi_{t+1} = psi_t - psides_t + v_t * delta_t / Lf * dt
+$$
+
+The model has a time horizon of $N = 10$ steps with $dt=0.1$. We chose these parameters through error and trial. Increasing the
+horizon requires more calculation steps without necessarily increasing the accuracy, whereas reducing the discretization step $dt$
+reduces the amount by which the MPC model is able to predict ahead.
+
+### Solving the Model
+To solve the model we set up the following cost function,
+$$
+J = \sum_{\tau = t + 1}^{t + N} w_{CTE} * CTE_\tau
+$$
+
 ---
 
 ## Dependencies
