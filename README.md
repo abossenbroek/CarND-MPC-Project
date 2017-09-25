@@ -1,6 +1,10 @@
 # CarND-Controls-MPC
 Self-Driving Car Engineer Nanodegree Program
 
+## Introduction
+Because of the large number of math equations in this document it is highly recommend to view this document with the [Google
+Chrome GitHub with MathJax plugin](https://chrome.google.com/webstore/detail/github-with-mathjax/).
+
 ## Model
 A Model Predictive Controller is used to change the acceleration and the steering angle, which are the actuators, along a path in
 the simulation. The MPC assumes no tire forces, gravity or impact from mass. This class of MPCs are often referred to as bicycle
