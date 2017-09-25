@@ -151,10 +151,17 @@ class FG_eval {
 //
 // MPC class definition implementation.
 //
-MPC::MPC() {}
+MPC::MPC() :
+  a_(0),
+  delta_(0)
+{
+  pred_path_x_.resize(N - 1);
+  pred_path_y_.resize(N - 1);
+}
+
 MPC::~MPC() {}
 
-MPCSolution MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
+void MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   bool ok = true;
   typedef CPPAD_TESTVECTOR(double) Dvector;
 
@@ -279,15 +286,11 @@ MPCSolution MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   auto cost = solution.obj_value;
   std::cout << "Cost " << cost << std::endl;
 
-  MPCSolution sol;
+  delta_ = solution.x[delta_start];
+  a_ = solution.x[a_start];
 
-  sol.delta.push_back(solution.x[delta_start]);
-  sol.a.push_back(solution.x[a_start]);
-
-    sol.x.push_back(solution.x[x_start + i]);
-    sol.y.push_back(solution.x[y_start + i]);
   for (size_t i = 0; i < N - 1; ++i) {
+    pred_path_x_.push_back(solution.x[x_start + i]);
+    pred_path_y_.push_back(solution.x[y_start + i]);
   }
-
-  return sol;
 }
